@@ -1,0 +1,206 @@
+<!--
+
+Sophos XC Firewall Rules
+Creado por Adrián Ñiguez
+25/02/2025
+
+-->
+
+<group name="sophos_fw,">
+    <rule id="101800" level="0">
+        <decoded_as>sophos_fw_custom</decoded_as>
+        <description>Sophos XC Firewall Event</description>
+    </rule>
+    
+    <rule id="101801" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Anti-Virus</field>
+        <field name="log_component" type="pcre2">HTTP|HTTPS</field>
+        <description>Virus $(virus) detectado en el equipo del usuario $(user_name) $(src_ip). Protocolo: $(log_component)</description>
+    </rule>
+    
+    <rule id="101802" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Anti-Virus</field>
+        <field name="log_component">FTP</field>
+        <description>Virus $(virus) detectado en el archivo $(file_name). Protocolo: $(log_component)</description>
+    </rule>
+    
+    <rule id="101803" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Anti-Virus</field>
+        <field name="log_component" negate="yes" type="pcre2">FTP|HTTP|HTTPS</field>
+        <description>Virus $(virus) detectado. Protocolo: $(log_component)</description>
+    </rule>
+    
+    <rule id="101804" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Content-Filtering</field>
+        <description>La aplicación $(app_name) ha sido bloqueada</description>
+    </rule>
+
+    <rule id="101805" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">ATP</field>
+        <description>$(virus) detectado en la IP $(src_ip)</description>
+    </rule>
+
+    <rule id="101806" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Event</field>
+        <field name="log_subtype">Authentication</field>
+        <field name="statusField">Failed</field>
+        <description>El usuario $(user_name) falló el inicio de sesión de $(client_used)</description>
+    </rule>
+    
+    <rule id="101807" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Event</field>
+        <field name="log_component" negate="yes">Firewall Authentication</field>
+        <field name="log_subtype">Authentication</field>
+        <field name="statusField">Successful</field>
+        <description>El usuario $(user_name) inició de sesión de $(client_used)</description>
+    </rule>
+        
+    <rule id="101808" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Event</field>
+        <field name="log_subtype">Admin</field>
+        <field name="statusField">Successful</field>
+        <match>logged in</match>
+        <description>El usuario $(user_name) ha iniciado sesión en el Firewall mediante $(log_component)</description>
+    </rule>
+    
+    <rule id="101809" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Anti-Spam</field>
+        <field name="log_component" negate="yes" type="pcre2">SMTP|SMTPS</field>
+        <field name="actionField">Accept</field>
+        <description>SPAM aceptado. Desde: $(sender) Para: $(recipient)</description>
+    </rule>
+    
+    <rule id="101810" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Anti-Virus</field>
+        <field name="log_component" negate="yes" type="pcre2">SMTP|SMTPS</field>
+        <field name="actionField">Accept</field>
+        <description>Virus $(virus) detectado. Desde: $(sender) Para: $(recipient)</description>
+    </rule>
+    
+    <rule id="101811" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Firewall</field>
+        <field name="log_component">DoS Attack</field>
+        <description>Ataque DoS detectado</description>
+    </rule>
+    
+    <rule id="101812" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Firewall</field>
+        <field name="log_component">ICMP Redirection</field>
+        <description>ICMP Redirection detectado</description>
+    </rule>
+    
+    <rule id="101813" level="12" frequency="50" timeframe="30">
+        <if_matched_sid>101812</if_matched_sid>
+        <description>Múltiples redirecciones ICMP en 30 segundos.</description>
+    </rule>
+    
+    <rule id="101814" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Firewall</field>
+        <field name="log_component">IP Spoof</field>
+        <description>IP Spoofing detectado</description>
+    </rule>
+    
+    <rule id="101815" level="12" frequency="50" timeframe="30">
+        <if_matched_sid>101814</if_matched_sid>
+        <description>Múltiples IP Spoofing en 30 segundos.</description>
+    </rule>
+
+    <rule id="101816" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Event</field>
+        <field name="log_component">Gateway</field>
+        <description>$(message)</description>
+    </rule>
+    
+    <rule id="101817" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Event</field>
+        <field name="log_component">Interface</field>
+        <description>$(message)</description>
+    </rule>
+    
+    <rule id="101818" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">IDP</field>
+        <field name="log_subtype">Detect</field>
+        <description>$(classification). $(signature_msg)</description>
+    </rule>
+    
+    <rule id="101819" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Event</field>
+        <field name="log_component" type="pcre2">L2TP|PPTP</field>
+        <description>$(message)</description>
+    </rule>
+
+    <rule id="101820" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Sandbox</field>
+        <field name="reason">malicious</field>
+        <description>Sanbox: El archivo $(file_name) es malicioso</description>
+    </rule>
+    
+    <rule id="101821" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Event</field>
+        <field name="log_component">SSL VPN</field>
+        <description>$(message)</description>
+    </rule>
+    
+    <rule id="101822" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Content Filtering</field>
+        <field name="log_component">Web Component Policy</field>
+        <field name="actionField">Deny</field>
+        <description>La web $(domain) ha sido bloqueada</description>
+    </rule>
+    
+    <rule id="101823" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Firewall</field>
+        <field name="log_component">Invalid Traffic</field>
+        <field name="log_subtype">Denied</field>
+        <description>Tráfico malformado</description>
+    </rule>
+    
+    <rule id="101824" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">System Health</field>
+        <field name="log_component">CPU</field>
+        <field name="idle" type="pcre2">^(?:[0-1]?[0-9])\.[0-9]{2}$</field>
+        <description>Uso de la CPU elevado</description>
+    </rule>
+    
+    <rule id="101825" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Event</field>
+        <field name="log_subtype">Admin</field>
+        <field name="statusField">Successful</field>
+        <match>logged out</match>
+        <description>El usuario $(user_name) ha cerrado en el Firewall mediante $(log_component)</description>
+    </rule>
+    
+    <rule id="101826" level="7">
+        <if_sid>101800</if_sid>
+        <field name="log_type">Event</field>
+        <field name="log_subtype">Admin</field>
+        <field name="statusField">Successful</field>
+        <match negate="yes">logged</match>
+        <description>$(message)</description>
+    </rule>
+</group>
+
+
